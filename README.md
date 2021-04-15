@@ -112,7 +112,7 @@ Komento `git log` tulostaa komentoriville varaston muutoshistorian. Tulosteessa 
 Komento `git diff` näyttää muutokset.
 
 Diff testi
-
+Diff lisäys
 
 Komennolla `git blame` voidaan tarkastella kunkin tiedoston metatietoja. Komennolla voidaan selvittää rivikohtaisesti, että kuka ja miten riviä on muokattu sekä mihin lähetykseen (commit) rivi kuuluu.
 ![kuva](https://user-images.githubusercontent.com/58463139/114857570-15999d00-9df1-11eb-81f2-83861b600494.png)
