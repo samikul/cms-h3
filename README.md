@@ -1,6 +1,14 @@
-# cms-h3
-Answers to cms-course's excercise 3
+# Sami Kulonpää
 
+## Lähtötilanne ja työympäristö
+
+|                 |                                                                                                      |
+| :---            | :-----------------------------------------------------------------------------------------------------|
+|Tehtävät         |[h3 - terokarvinen.com](https://terokarvinen.com/2021/configuration-management-systems-palvelinten-hallinta-ict4tn022-spring-2021/#h3-versionhallinta)         |
+|Kurssisivu       |[ICT4TN022-3011](https://terokarvinen.com/2021/configuration-management-systems-palvelinten-hallinta-ict4tn022-spring-2021/)|
+|Tietokone        |Lenovo ThinkPad T495                                                                                  |
+|Käyttöjärjestelmä|Windows 10 64-bit                                                                                     |
+|Työympäristö     |Oracle VM VirtualBox 6.1.18 & [debian-live-10.8.0-amd64-xfce+nonfree.iso](https://cdimage.debian.org/images/unofficial/non-free/images-including-firmware/current-live/amd64/iso-hybrid/debian-live-10.8.0-amd64-xfce+nonfree.iso)                  |
 
 Tehtävässä käytetty [ohjemateriaali](http://terokarvinen.com/2016/publish-your-project-with-github/) (Tero Karvinen, 2016).
 
@@ -107,6 +115,7 @@ Komento `git log` tulostaa komentoriville varaston muutoshistorian. Tulosteessa 
 - Author: tekijä
 - Date: muutosajankohta
 - muutosviesti
+
 ![kuva](https://user-images.githubusercontent.com/58463139/114847784-c189bb00-9de6-11eb-892b-7c3724f77a7f.png)
 
 Komento `git diff` näyttää muutokset.
@@ -115,9 +124,11 @@ Muokkasin tiedostoa `README.md` ja työnsin muutokset versiohallintaan.
 	$ git add . && git commit; git pull && git push
 
 Syötin `git diff README.md` komennon. Komentoriville tulostui värikoodattuna tekemäni muutos.
+
 ![kuva](https://user-images.githubusercontent.com/58463139/114858494-3282a000-9df2-11eb-9f64-c2742d0f319a.png)
 
 Komennolla `git blame` voidaan tarkastella kunkin tiedoston metatietoja. Komennolla voidaan selvittää rivikohtaisesti, että kuka ja miten riviä on muokattu sekä mihin lähetykseen (commit) rivi kuuluu.
+
 ![kuva](https://user-images.githubusercontent.com/58463139/114857570-15999d00-9df1-11eb-81f2-83861b600494.png)
 
 ## e) Tee tyhmä muutos gittiin, älä tee commit:tia. Tuhoa huonot muutokset ‘git reset –hard’. Huomaa, että tässä toiminnossa ei ole peruutusnappia.
