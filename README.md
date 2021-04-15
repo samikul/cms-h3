@@ -110,13 +110,15 @@ Komento `git log` tulostaa komentoriville varaston muutoshistorian. Tulosteessa 
 ![kuva](https://user-images.githubusercontent.com/58463139/114847784-c189bb00-9de6-11eb-892b-7c3724f77a7f.png)
 
 Komento `git diff` näyttää muutokset.
+Muokkasin tiedostoa `README.md` ja työnsin muutokset versiohallintaan.
 
-Diff testi
-Diff lisäys
+	$ git add . && git commit; git pull && git push
+
+Syötin `git diff README.md` komennon. Komentoriville tulostui värikoodattuna tekemäni muutos.
+![kuva](https://user-images.githubusercontent.com/58463139/114858494-3282a000-9df2-11eb-9f64-c2742d0f319a.png)
 
 Komennolla `git blame` voidaan tarkastella kunkin tiedoston metatietoja. Komennolla voidaan selvittää rivikohtaisesti, että kuka ja miten riviä on muokattu sekä mihin lähetykseen (commit) rivi kuuluu.
 ![kuva](https://user-images.githubusercontent.com/58463139/114857570-15999d00-9df1-11eb-81f2-83861b600494.png)
-
 
 ## e) Tee tyhmä muutos gittiin, älä tee commit:tia. Tuhoa huonot muutokset ‘git reset –hard’. Huomaa, että tässä toiminnossa ei ole peruutusnappia.
 
