@@ -133,6 +133,34 @@ Komennolla `git blame` voidaan tarkastella kunkin tiedoston metatietoja. Komenno
 
 ## e) Tee tyhmä muutos gittiin, älä tee commit:tia. Tuhoa huonot muutokset ‘git reset –hard’. Huomaa, että tässä toiminnossa ei ole peruutusnappia.
 
-## f) Tee uusi salt-moduli. Voit asentaa ja konfiguroida minkä vain uuden ohjelman: demonin, työpöytäohjelman tai komentokehotteesta toimivan ohjelman. Käytä tarvittaessa ‘find -printf “%T+ %p\n”|sort’ löytääksesi uudet asetustiedostot. (Tietysti eri ohjelma kuin aiemmissa tehtävissä, tarkoitushan on harjoitella Salttia)
+Lisäsin poistettavan tekstin `README.md` tiedostoon
 
-## d) Vapaaehtoinen: Laita srv/salt/ gittiin. Tee uusi moduli. Kloonaa varastosi toiselle koneelle (tai poista srv/salt ja palauta se kloonaamalla) ja jatka sillä.
+![55](https://user-images.githubusercontent.com/58463139/115264154-b7e1b980-a13e-11eb-9f4f-e334f71c8f30.JPG)
+
+Komennolla `git status` näyttää muokatun tiedoston ja sen, ettei tiedostoa ole lisätty valmistelualueelle.
+
+```git
+sami@kuja:~/palvelintenhallinta/cms-h3$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+```
+$ git reset --hard
+HEAD is now at c053a6e edit readme
+```
+
+- [HEAD](https://stackoverflow.com/questions/2304087/what-is-head-in-git) viittaa varastoon ja sen haaraumaan
+- `c053a6e` viittaa viimeisimpään versiohallintaan työnnetyn varaston haarauman muutokseen
+- `edit readme` on em. muokkauksen tarkenne
+
+
+## f) Tee uusi salt-moduli. Voit asentaa ja konfiguroida minkä vain uuden ohjelman: demonin, työpöytäohjelman tai komentokehotteesta toimivan ohjelman. Käytä tarvittaessa ‘find -printf “%T+ %p\n”|sort’ löytääksesi uudet asetustiedostot. (Tietysti eri ohjelma kuin aiemmissa tehtävissä, tarkoitushan on harjoitella Salttia)
