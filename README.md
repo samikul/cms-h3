@@ -362,12 +362,4 @@ $ sudo find / -type d -name "cms-h3"
 /home/sami/git-testit/cms-h3
 /root/cms-h3
 ```
-Varasto oli kloonattu juurihakemistoon.
-```
-$ ls
- bin    etc           home             lib     libx32       mnt    root   srv   usr       vmlinuz.old
- boot   git-repos     initrd.img       lib32   lost+found   opt    run    sys   var
- dev   "git-repos'"   initrd.img.old   lib64   media        proc   sbin   tmp   vmlinuz
-```
-Hakemisto `/git-repos` oli kuitenkin tyhjä. Tehtävä jäi tältä erää kesken, sillä en tiedä mihin varasto kloonattiin. Jatkan asian tutkimista myöhemmin.
-
+Varasto kloonattiin `/root/cms-h3` hakemistoon. Se ei missään nimessä ole oikea paikka hakemistolle. Tältä erää ongelmanratkonta jää kesken ja palaan tähän myöhemmin uudelleen.
