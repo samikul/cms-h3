@@ -11,9 +11,10 @@
 |Työympäristö     |Oracle VM VirtualBox 6.1.18 & [debian-live-10.8.0-amd64-xfce+nonfree.iso](https://cdimage.debian.org/images/unofficial/non-free/images-including-firmware/current-live/amd64/iso-hybrid/debian-live-10.8.0-amd64-xfce+nonfree.iso)                  |
 
 Tehtävässä käytetty [ohjemateriaali](http://terokarvinen.com/2016/publish-your-project-with-github/) (Tero Karvinen, 2016).
+
 [Git-sanastoa suomeksi](https://book.sovelluskontti.com/versionhallinta/sanasto) (Turo Nylud, 2020).
 
-## a) MarkDown. Tee tämän tehtävän raportti MarkDownina. Helpointa on tehdä raportti GitHub-varastoon, jolloin md-päätteise$
+## a) MarkDown. Tee tämän tehtävän raportti MarkDownina. Helpointa on tehdä raportti GitHub-varastoon, jolloin md-päätteiset tiedostot muotoillaan automaattisesti. Tyhjä rivi tekee kappalejaon, risuaita ‘#’ tekee otsikon, sisennys merkitsee koodinpätkän. Vinkkinä artikkelini [Publish Your Project with GitHub](http://terokarvinen.com/2016/publish-your-project-with-github/index.html).
 
 ### Uuden varaston luonti
 Kirjauduin [Githubiin](https://github.com) sisään ja loin uuden varaston valitsemalla "New".
@@ -30,7 +31,7 @@ Kirjauduin [Githubiin](https://github.com) sisään ja loin uuden varaston valit
 - Add .gitignore
   - .gitignore tiedostolla määritellään ne tiedostopäätteet, joita versionhallintaan ei lähetetä. Nyt tälle ei ole tarvetta.
 - Choose a licence
-  - GNU General Public Licence v3.0 antaa muille hyvin vapaat kädet, mutta vaatii GPL v3.0 lisenssin käyttämistä niissä tuotteissa ja projekteissa$
+  - GNU General Public Licence v3.0 antaa muille hyvin vapaat kädet, mutta vaatii GPL v3.0 lisenssin käyttämistä niissä tuotteissa ja projekteissa, jotka ovat toteutettu GPL v3.0 lisenssin alaisuudessa.
 
 Valitsin "Create repository".
 
@@ -159,7 +160,7 @@ $ git reset --hard
 HEAD is now at c053a6e edit readme
 ```
 
-- [HEAD](https://stackoverflow.com/questions/2304087/what-is-head-in-git) viittaa varastoon ja sen haaraumaan
+- [HEAD](https://book.sovelluskontti.com/versionhallinta/sanasto) viittaa varaston ja haaraumaan viimeisimpään versiohallintaan lähetettyyn muutokseen.
 - `c053a6e` viittaa viimeisimpään versiohallintaan työnnetyn varaston haarauman muutokseen
 - `edit readme` on em. muokkauksen tarkenne
 
