@@ -190,7 +190,7 @@ Loin Saltille uuden hakemiston
 $ sudo mkdir /srv/salt/git
 ```
 Hakemistoon loin ajettavan tilan
-```
+```salt
 $ sudo nano init.sls 
 
 git:
@@ -198,7 +198,7 @@ git:
 
 ```
 Ajoin tilan ja Salt asensi koneelleni versiohallinan
-```
+```salt
 $ sudo salt '*' state.apply git
 sami:
 ----------
@@ -245,7 +245,7 @@ Total states run:     1
 Total run time:   8.824 s
 ```
 Muokkasin tilaa ja lisäsin säännön kansion luomiselle.
-```
+```salt
 $ sudo nano /srv/salt/git/init.sls
 
 git:
@@ -290,7 +290,7 @@ Total states run:     2
 Total run time: 391.847 ms
 ```
 Muokkasin tilaa siten, että komentoriville syötetään komento, joka vie haluttuun hakemistoon, jossa ajetaan komento, joka kloonaa halutun git-varaston.
-```
+```salt
 $ sudo nano /srv/salt/git/init.sls
 
 git:
@@ -305,7 +305,7 @@ create directory for git repos:
     - name: git clone https://github.com/samikul/cms-h3.git
 ```
 Otin tilan käyttöön.
-```
+```salt
 $ sudo salt '*' state.apply git
 sami:
 ----------
