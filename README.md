@@ -12,7 +12,9 @@
 
 Tehtävässä käytetty [ohjemateriaali](http://terokarvinen.com/2016/publish-your-project-with-github/) (Tero Karvinen, 2016).
 
-## a) MarkDown. Tee tämän tehtävän raportti MarkDownina. Helpointa on tehdä raportti GitHub-varastoon, jolloin md-päätteise$
+[Git-sanastoa suomeksi](https://book.sovelluskontti.com/versionhallinta/sanasto) (Turo Nylud, 2020).
+
+## a) MarkDown. Tee tämän tehtävän raportti MarkDownina. Helpointa on tehdä raportti GitHub-varastoon, jolloin md-päätteiset tiedostot muotoillaan automaattisesti. Tyhjä rivi tekee kappalejaon, risuaita ‘#’ tekee otsikon, sisennys merkitsee koodinpätkän. Vinkkinä artikkelini [Publish Your Project with GitHub](http://terokarvinen.com/2016/publish-your-project-with-github/index.html).
 
 ### Uuden varaston luonti
 Kirjauduin [Githubiin](https://github.com) sisään ja loin uuden varaston valitsemalla "New".
@@ -29,7 +31,7 @@ Kirjauduin [Githubiin](https://github.com) sisään ja loin uuden varaston valit
 - Add .gitignore
   - .gitignore tiedostolla määritellään ne tiedostopäätteet, joita versionhallintaan ei lähetetä. Nyt tälle ei ole tarvetta.
 - Choose a licence
-  - GNU General Public Licence v3.0 antaa muille hyvin vapaat kädet, mutta vaatii GPL v3.0 lisenssin käyttämistä niissä tuotteissa ja projekteissa$
+  - GNU General Public Licence v3.0 antaa muille hyvin vapaat kädet, mutta vaatii GPL v3.0 lisenssin käyttämistä niissä tuotteissa ja projekteissa, jotka ovat toteutettu GPL v3.0 lisenssin alaisuudessa.
 
 Valitsin "Create repository".
 
@@ -158,9 +160,206 @@ $ git reset --hard
 HEAD is now at c053a6e edit readme
 ```
 
-- [HEAD](https://stackoverflow.com/questions/2304087/what-is-head-in-git) viittaa varastoon ja sen haaraumaan
+- [HEAD](https://book.sovelluskontti.com/versionhallinta/sanasto) viittaa varaston ja haaraumaan viimeisimpään versiohallintaan lähetettyyn muutokseen.
 - `c053a6e` viittaa viimeisimpään versiohallintaan työnnetyn varaston haarauman muutokseen
 - `edit readme` on em. muokkauksen tarkenne
 
 
 ## f) Tee uusi salt-moduli. Voit asentaa ja konfiguroida minkä vain uuden ohjelman: demonin, työpöytäohjelman tai komentokehotteesta toimivan ohjelman. Käytä tarvittaessa ‘find -printf “%T+ %p\n”|sort’ löytääksesi uudet asetustiedostot. (Tietysti eri ohjelma kuin aiemmissa tehtävissä, tarkoitushan on harjoitella Salttia)
+
+Tehtävän tekoon saatiin luennolla lisäaikaa. Tehtävä tehty määräajan umpeutumisen jälkeen.
+
+Tein tilan, jolla kloonataan githubista määritelty varasto. Käsin tehtynä toimenpide on hyvin suoraviivainen
+
+```
+$ git clone https://github.com/samikul/cms-h3.git
+Cloning into 'cms-h3'...
+remote: Enumerating objects: 35, done.
+remote: Counting objects: 100% (35/35), done.
+remote: Compressing objects: 100% (27/27), done.
+remote: Total 35 (delta 8), reused 24 (delta 6), pack-reused 0
+Unpacking objects: 100% (35/35), done.
+```
+Poistin gitin, jotta voin asentaa sen Saltin avulla
+```
+$ sudo apt-get purge git
+$ sudo apt-get autoremove
+```
+Loin Saltille uuden hakemiston
+```
+$ sudo mkdir /srv/salt/git
+```
+Hakemistoon loin ajettavan tilan
+```salt
+$ sudo nano init.sls 
+
+git:
+  pkg.installed
+
+```
+Ajoin tilan ja Salt asensi koneelleni versiohallinan
+```salt
+$ sudo salt '*' state.apply git
+sami:
+----------
+          ID: git
+    Function: pkg.installed
+      Result: True
+     Comment: The following packages were installed/updated: git
+     Started: 20:34:38.001466
+    Duration: 8823.758 ms
+     Changes:   
+              ----------
+              git:
+                  ----------
+                  new:
+                      1:2.20.1-2+deb10u3
+                  old:
+              git-completion:
+                  ----------
+                  new:
+                      1
+                  old:
+              git-core:
+                  ----------
+                  new:
+                      1
+                  old:
+              git-man:
+                  ----------
+                  new:
+                      1:2.20.1-2+deb10u3
+                  old:
+              liberror-perl:
+                  ----------
+                  new:
+                      0.17027-2
+                  old:
+
+Summary for sami
+------------
+Succeeded: 1 (changed=1)
+Failed:    0
+------------
+Total states run:     1
+Total run time:   8.824 s
+```
+Muokkasin tilaa ja lisäsin säännön kansion luomiselle.
+```salt
+$ sudo nano /srv/salt/git/init.sls
+
+git:
+  pkg.installed
+
+create directory for git repos:
+  file.directory:
+    - name: /git-repos
+
+```
+Otin tilan käyttöön
+```salt
+$ sudo salt '*' state.apply git
+sami:
+----------
+          ID: git
+    Function: pkg.installed
+      Result: True
+     Comment: All specified packages are already installed
+     Started: 20:52:27.544526
+    Duration: 390.923 ms
+     Changes:   
+----------
+          ID: create directory for git repos
+    Function: file.directory
+        Name: /git-repos
+      Result: True
+     Comment: Directory /git-repos updated
+     Started: 20:52:27.937315
+    Duration: 0.924 ms
+     Changes:   
+              ----------
+              /git-repos:
+                  New Dir
+
+Summary for sami
+------------
+Succeeded: 2 (changed=1)
+Failed:    0
+------------
+Total states run:     2
+Total run time: 391.847 ms
+```
+Muokkasin tilaa siten, että komentoriville syötetään komento, joka vie haluttuun hakemistoon, jossa ajetaan komento, joka kloonaa halutun git-varaston.
+```salt
+$ sudo nano /srv/salt/git/init.sls
+
+git:
+  pkg.installed
+
+create directory for git repos:
+  file.directory:
+    - name: /git-repos'
+
+'cd /git-repos':
+  cmd.run:
+    - name: git clone https://github.com/samikul/cms-h3.git
+```
+Otin tilan käyttöön.
+```salt
+$ sudo salt '*' state.apply git
+sami:
+----------
+          ID: git
+    Function: pkg.installed
+      Result: True
+     Comment: All specified packages are already installed
+     Started: 21:01:49.295838
+    Duration: 396.302 ms
+     Changes:   
+----------
+          ID: create directory for git repos
+    Function: file.directory
+        Name: /git-repos'
+      Result: True
+     Comment: Directory /git-repos' updated
+     Started: 21:01:49.693993
+    Duration: 0.935 ms
+     Changes:   
+              ----------
+              /git-repos':
+                  New Dir
+----------
+          ID: cd /git-repos
+    Function: cmd.run
+        Name: git clone https://github.com/samikul/cms-h3.git
+      Result: True
+     Comment: Command "git clone https://github.com/samikul/cms-h3.git" run
+     Started: 21:01:49.695647
+    Duration: 736.31 ms
+     Changes:   
+              ----------
+              pid:
+                  14138
+              retcode:
+                  0
+              stderr:
+                  Cloning into 'cms-h3'...
+              stdout:
+
+Summary for sami
+------------
+Succeeded: 3 (changed=2)
+Failed:    0
+------------
+Total states run:     3
+Total run time:   1.134 s
+```
+Hakemisto `/git-repos` oli kuitenkin tyhjä. Johonkin varasto kloonattiin, mutta ei ainakan oikeaan paikkaan.
+Etsin [ohjeet](https://www.cyberciti.biz/faq/howto-find-a-directory-linux-command/) miten etsiä hakemistoa. Komennon `find` jälkeen haetaan koko järjestelmästä hakemistoa, jonka nimi on "cms-h3".
+```
+$ sudo find / -type d -name "cms-h3"
+/home/sami/palvelintenhallinta/cms-h3
+/home/sami/git-testit/cms-h3
+/root/cms-h3
+```
+Varasto kloonattiin `/root/cms-h3` hakemistoon. Se ei missään nimessä ole oikea paikka hakemistolle. Tältä erää ongelmanratkonta jää kesken ja palaan tähän myöhemmin uudelleen.
