@@ -1,0 +1,247 @@
+Aloitin luomalla komennon käsin.
+```
+$ mkdir /home/sami/palvelintenhallinta/uudet-komennot
+```
+```
+sami@kuja:~/palvelintenhallinta$ nano /home/sami/palvelintenhallinta/uudet-komennot/heimaailma.sh
+sami@kuja:~/palvelintenhallinta$ cat /home/sami/palvelintenhallinta/uudet-komennot/heimaailma.sh 
+#!/bin/bash
+
+echo "Hei maailma!"
+```
+Annoin kaikille käyttäjäryhmille suoritusoikeuden
+```
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ chmod a+x heimaailma.sh 
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ ls -l heimaailma.sh 
+-rwxr-xr-x 1 sami sami 26 Apr 24 11:39 heimaailma.sh
+```
+Skriptin pystyi nyt ajamaan syöttämällä koko tiedostonimen polkuineen
+```
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ ./heimaailma.sh 
+Hei maailma!
+```
+Muutin tiedostonimen 
+```
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ mv heimaailma.sh heimaailma
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ ls
+heimaailma
+```
+Kopioin tiedoston hakemistoon `/usr/local/bin`, jotta kaikki käyttäjät voivat ajaa komennon
+```
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ sudo cp heimaailma /usr/local/bin/
+[sudo] password for sami: 
+sami@kuja:~/palvelintenhallinta/uudet-komennot$ heimaailma 
+Hei maailma!
+```
+Kirjauduin testikäyttäjällä sisään ja kokeilin skriptin toimivuutta
+```
+sami@kuja:/home$ ssh testi01@10.0.2.15
+testi01@10.0.2.15's password: 
+Linux kuja 4.19.0-14-amd64 #1 SMP Debian 4.19.171-2 (2021-01-30) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Wed Apr 21 13:04:42 2021 from 10.0.2.15
+testi01@kuja:~$ heimaailma 
+Hei maailma!
+```
+Komennon luonti onnistui käsin. Nyt luon komennon Saltin avulla.
+
+Loin komennolle oman Salt-hakemiston.
+```
+sami@kuja:/home$ sudo mkdir /srv/salt/heimaailma
+```
+Loin komennon, joka asennetaan masterilta minioneiden järjestelmään.
+```
+sami@kuja:/home$ sudo nano /srv/salt/heimaailma/heisalt
+sami@kuja:/home$ cat /srv/salt/heimaailma/heisalt 
+#!/bin/bash/
+
+echo "Hei Salt!"
+```
+Loin ajettavan tilan. Käyttäjäoikeuksien määrittelyn toteutusta mietin, ja päädyin luku- ja
+suoritusoikeuksiin (555). En ole varma, pitäisikö minionin järjestelmässä käyttäjällä olla
+oikeus muokata komentoa, jonka ylläpitäjä on kirjoittanut ja asentanut minionin järjestelmälle.
+
+```
+sami@kuja:/srv/salt/heimaailma$ sudo nano /srv/salt/heimaailma/init.sls
+sami@kuja:/srv/salt/heimaailma$ cat /srv/salt/heimaailma/init.sls 
+/user/local/bin/heisalt:
+  file.managed:
+    - source: salt://heimaailma/heisalt
+    - mode: "0555"
+```
+Ajoin komennon, mutta sain virheilmoituksen. Poistan ID:n perästä `.../heisalt`, koska se
+viittasi hakemistoon, jota ei ole.
+```
+sami@kuja:/srv/salt/heimaailma$ sudo salt '*' state.apply heimaailma
+sami:
+----------
+          ID: /user/local/bin/heisalt
+    Function: file.managed
+      Result: False
+     Comment: Parent directory not present
+     Started: 12:08:06.005820
+    Duration: 27.981 ms
+     Changes:   
+
+Summary for sami
+------------
+Succeeded: 0
+Failed:    1
+------------
+Total states run:     1
+Total run time:  27.981 ms
+ERROR: Minions returned with non-zero exit code
+```
+Sama virheilmoitus jälleen.
+```
+sami@kuja:/srv/salt/heimaailma$ sudo salt '*' state.apply heimaailma
+sami:
+----------
+          ID: /user/local/bin
+    Function: file.managed
+      Result: False
+     Comment: Parent directory not present
+     Started: 12:10:21.018372
+    Duration: 22.08 ms
+     Changes:   
+
+Summary for sami
+------------
+Succeeded: 0
+Failed:    1
+------------
+Total states run:     1
+Total run time:  22.080 ms
+ERROR: Minions returned with non-zero exit code
+```
+ID:n polussa on kirjoitusvirhe: `/user/...` on väärin. Korjasin sen `/usr/...` ja ajoin tilan.
+```
+sami@kuja:/srv/salt/heimaailma$ sudo salt '*' state.apply heimaailma
+sami:
+----------
+          ID: /usr/local/bin
+    Function: file.managed
+      Result: False
+     Comment: Specified target /usr/local/bin is a directory
+     Started: 12:12:48.954017
+    Duration: 1.329 ms
+     Changes:   
+
+Summary for sami
+------------
+Succeeded: 0
+Failed:    1
+------------
+Total states run:     1
+Total run time:   1.329 ms
+ERROR: Minions returned with non-zero exit code
+```
+Lisäsin ID:n polun perään tiedostonimen, joka luodaan Saltin avulla. Tämä nimi on se,
+millä komento ajetaan.
+```
+sami@kuja:/srv/salt/heimaailma$ cat /srv/salt/heimaailma/init.sls 
+/usr/local/bin/heisalt:
+  file.managed:
+    - source: salt://heimaailma/heisalt
+    - mode: "0555"
+```
+Uusi yritys.
+```salt
+sami@kuja:/srv/salt/heimaailma$ sudo salt '*' state.apply heimaailma
+sami:
+----------
+          ID: /usr/local/bin/heisalt
+    Function: file.managed
+      Result: True
+     Comment: File /usr/local/bin/heisalt updated
+     Started: 12:15:05.946979
+    Duration: 23.649 ms
+     Changes:   
+              ----------
+              diff:
+                  New file
+              mode:
+                  0555
+
+Summary for sami
+------------
+Succeeded: 1 (changed=1)
+Failed:    0
+------------
+Total states run:     1
+Total run time:  23.649 ms
+```
+Nyt sain tilan käyttöön. Komentoriville tulostui tieto siitä, että uusi tiedosto on luotu
+ja että käyttäjällä , käyttäjäryhmällä ja muilla on oikeudet lukea ja suorittaa komento (read execute).
+
+Suoritin komennon
+```
+sami@kuja:/srv/salt/heimaailma$ cd
+sami@kuja:~$ heisalt 
+bash: /usr/local/bin/heisalt: /bin/bash/: bad interpreter: Not a directory
+```
+Shebangissa näyttää olevan typo. Kävin korjaamassa sen poistamalla ylimääräisen `/` merkin.
+```
+sami@kuja:~$ sudo nano /srv/salt/heimaailma/heisalt
+sami@kuja:~$ cat /srv/salt/heimaailma/heisalt 
+#!/bin/bash
+
+echo "Hei Salt!" 
+```
+Ajoin tilan uudelleen
+```salt
+sami@kuja:~$ sudo salt '*' state.apply heimaailma
+sami:
+----------
+          ID: /usr/local/bin/heisalt
+    Function: file.managed
+      Result: True
+     Comment: File /usr/local/bin/heisalt updated
+     Started: 12:24:03.642833
+    Duration: 30.482 ms
+     Changes:   
+              ----------
+              diff:
+                  --- 
+                  +++ 
+                  @@ -1,3 +1,3 @@
+                  -#!/bin/bash/
+                  +#!/bin/bash
+                   
+                   echo "Hei Salt!"
+
+Summary for sami
+------------
+Succeeded: 1 (changed=1)
+Failed:    0
+------------
+Total states run:     1
+Total run time:  30.482 ms
+```
+Nyt komennon voi ajaa
+```
+sami@kuja:~$ heisalt 
+Hei Salt!
+```
+Testasin vielä testikäyttäjällä
+```
+sami@kuja:~$ ssh testi01@10.0.2.15
+testi01@10.0.2.15's password: 
+Linux kuja 4.19.0-14-amd64 #1 SMP Debian 4.19.171-2 (2021-01-30) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Sat Apr 24 11:50:01 2021 from 10.0.2.15
+testi01@kuja:~$ heisalt 
+Hei Salt!
+```
